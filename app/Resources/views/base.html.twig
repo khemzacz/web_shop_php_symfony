@@ -2,12 +2,32 @@
 <html>
     <head>
         <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
+    <div class="row">
+        <div class="col-sm-10">.col-sm-10</div>
+        <div class="col-sm-1">.col-sm-1</div>
+        <div class="col-sm-2">.col-sm-2</div>
+    </div>
+
         {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+            <script src="{{asset('js/jquery-1.12.1.min.js')  }}"></script>
+            <script src="{{asset('js/bootstrap.min.js')  }}"></script>
+                <script>
+                //var text, result;
+                //result = prompt("what's your name?","noname");
+                //alert(result);
+                var obiekt = new Object();
+                obiekt.i = 3;
+                obiekt.i++;
+                alert("1"+'2'+3+obiekt.i);
+                </script>
+        {% endblock %}
     </body>
 </html>
