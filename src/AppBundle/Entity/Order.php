@@ -24,9 +24,10 @@ class Order
      */
     protected $id;
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="orders" )
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
-    protected $fos_user_id;
+    protected $user;
     /**
      * @ORM\Column(type="date")
      */
@@ -218,5 +219,29 @@ class Order
     public function getState()
     {
         return $this->state;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Order
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }
