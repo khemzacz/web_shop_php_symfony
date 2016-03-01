@@ -19,7 +19,7 @@ class Product
 {
 /**
  * @ORM\Column(type="integer")
- * @ORM\ID
+ * @ORM\Id
  * @ORM\GeneratedValue(strategy="AUTO")
  */
     protected $id;
@@ -36,7 +36,7 @@ class Product
  */
     protected $description;
     /**
-     * @ORM\ManyToOne(targetEntity="category", inversedBy="products")
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      */
     protected $category;

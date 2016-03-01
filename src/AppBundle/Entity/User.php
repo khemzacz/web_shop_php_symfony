@@ -19,12 +19,12 @@ class User extends BaseUser
 {
     /**
      * @ORM\Column
-     * @ORM\ID
+     * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
     /**
-     * @ORM\OneToMany(targetEntity="Order", mappedBy="fos_user")
+     * @ORM\OneToMany(targetEntity="Order", mappedBy="user")
      */
     protected $orders;
 

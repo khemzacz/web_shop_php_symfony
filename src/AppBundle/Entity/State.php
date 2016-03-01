@@ -19,7 +19,7 @@ class State
 {
     /**
      * @ORM\Column(type="integer")
-     * @ORM\ID
+     * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
