@@ -6,19 +6,23 @@ use AppBundle\Entity\Product;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
+/**
+ * Class DefaultController
+ * @package AppBundle\Controller
+ * @Route("/")
+ */
 class DefaultController extends Controller
 {
     /**
      * @Route("/", name="homepage")
+     * @Template("AppBundle:Main:default.html.twig")
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
         // replace this example code with whatever you need
-        return $this->render('default/index.html.twig', array(
-            'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
-        ));
+        return array('Hello World!');
     }
 
     /**
@@ -36,6 +40,6 @@ class DefaultController extends Controller
         $em->persist($product);
         $em->flush();
 
-        return new Response('Creater a product with id '.$product->getId());
+        return new Response('Created a product with id '.$product->getId());
     }
 }
