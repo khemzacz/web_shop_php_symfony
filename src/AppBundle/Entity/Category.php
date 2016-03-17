@@ -198,4 +198,9 @@ class Category
     {
         return $this->sub_categories;
     }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }

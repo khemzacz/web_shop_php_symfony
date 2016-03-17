@@ -4,3 +4,21 @@
     alignment: center;
     margin-right: 6pt;
 }
+
+.not-a-real-shop{
+    position: relative;
+    font-size: 14pt;
+    margin-up: 5pt;
+    margin-down: 5 pt;
+    margin-right: 5pt;
+    margin-left: 20%;
+}
+
+
+.my-register-form{
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-up: 2%;
+    margin-down: 2%;
+
+}

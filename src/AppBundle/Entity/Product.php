@@ -45,10 +45,26 @@ class Product
      */
     protected $amount;
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=255, nullable = true)
      */
-    protected $picture_path; # this is going to be a picture path in project directory
+    protected $picture_path;
 
+    public function getAbsolutePath(){
+        return null === $this->picture_path ? null : $this->getUploadDir().'/'.$this->path;
+    }
+
+
+    public function getWebPath(){
+        return null === $this->picture_path ? null : $this->getUploadDir().'/'/$this->path;
+    }
+
+    protected function getUploadRootDir(){
+        return __DIR__.'/../../../../web/'.$this->getUploadDir();
+    }
+
+    protected function getUploadDir(){
+        return 'products/images';
+    }
 
     /**
      * Set id
@@ -240,5 +256,10 @@ class Product
     public function getCategory()
     {
         return $this->category;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 }

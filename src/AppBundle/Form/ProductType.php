@@ -19,7 +19,7 @@ class ProductType extends AbstractType
             ->add('price')
             ->add('description')
             ->add('amount')
-            ->add('picture_path')
+            ->add('picture_path', 'file', array('label' => 'Product picture as jpg, png, or gif file'))
             ->add('category')
         ;
     }
