@@ -50,6 +50,13 @@ class ProductController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            $file = $entity->getPicturePath();
+            $fileName = md5(uniqid()).'.'.$file->guessExtension();
+
+            $PicturesDir = $this->container->getParameter('kernel.root_dir').'/../web/products/images';
+            $file->move($PicturesDir, $fileName);
+            $entity->setPicturePath($fileName);
+
             $em->persist($entity);
             $em->flush();
 
