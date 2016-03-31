@@ -29,19 +29,19 @@ class Category
      */
     protected $name;
     /**
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="sub_categories")
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      */
     protected $upper_category;
-
+    /**
+     * @ORM\OneToMany(targetEntity="Category", mappedBy="upper_category")
+     */
+    protected $sub_categories;
     /**
      * @ORM\OneToMany(targetEntity="Product", mappedBy="category")
      */
     protected $products;
-    /**
-     * @ORM\OneToMany(targetEntity="Category", mappedBy="category")
-     */
-    protected $sub_categories;
+
 
 
     public function __construct()
