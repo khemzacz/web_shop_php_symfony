@@ -9,23 +9,25 @@
             <link rel="stylesheet" href="{{ asset('css/main.css') }}" />
             <link rel="stylesheet" href="{{ asset('css/my.css') }}" />
         {% endblock %}
-        {% block javascripts %}
-            <script src="{{ asset('js/jquery-2.2.1.min.js') }}"></script>
-            <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-            <script stc="{{ asset('js/angular.min.js') }}"></script>
-        {% endblock %}
+
     </head>
     <body>
     {% block logo %}
-        <div class="my-logo"><img src="{{ asset('images/khemzacz.sklep.pl.png') }}"></div>
+        <div class="row">
+            <div class="col-lg-3"><a href = "{{ path('homepage') }}"></a><img src="{{ asset('images/khemzacz.sklep.pl.png') }}"></div>
+            <div class="col-lg-7" >
+                <div class = "not-a-real-shop">
+                    <ul>
+                        <li> Witryna utworzona wyłącznie do celów edukacyjnych. Dlatego wszelkie informacje w tej witrynie NIE STANOWIĄ OFERTY w rozumieniu prawa handlowego.</li>
+                        <li> Złożone zamówienia nie powodują zawarcia umowy kupna-sprzedaży.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="my-logo"></div>
     {% endblock %}
     {% block info %}
-        <div class = "not-a-real-shop">
-            <ul>
-                <li>1. Witryna utworzona wyłącznie do celów edukacyjnych. Dlatego wszelkie informacje w tej witrynie NIE STANOWIĄ OFERTY w rozumieniu prawa handlowego.</li>
-                <li>2. Złożona zamówienia nie powodują zawarcia umowy kupna-sprzedaży.</li>
-            </ul>
-        </div>
+
     {% endblock %}
     {% block navbar %}
         <nav class="navbar navbar-default">
@@ -91,7 +93,11 @@
     {% endblock %}
     {% block body %}
     {% endblock %}
-
+    {% block javascripts %}
+        <script src="{{ asset('js/jquery-2.2.1.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+        <script stc="{{ asset('js/angular.min.js') }}"></script>
+    {% endblock %}
 
     {% block fos_user_content %}
     {% endblock fos_user_content %}

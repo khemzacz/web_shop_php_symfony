@@ -8,10 +8,7 @@
 .not-a-real-shop{
     position: relative;
     font-size: 14pt;
-    margin-up: 5pt;
-    margin-down: 5 pt;
-    margin-right: 5pt;
-    margin-left: 20%;
+    margin: 2%;
 }
 
 
