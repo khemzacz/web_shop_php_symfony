@@ -37,19 +37,21 @@ class searchMainCategoriesController extends Controller
         $i=0;
 
         foreach($categories as $category) {
-            $categoriesArray[$i]['nazwaKategori'] = $category->getName();
-            $categoriesArray[$i]['idKategori'] = $category->getId();
+            $categoriesArray[$i]['nazwaKategorii'] = $category->getName();
+            $categoriesArray[$i]['idKategorii'] = $category->getId();
             $i++;
         }
         return new JsonResponse(array('categories' =>$categoriesArray));
     }
 
     /**
-     * @Route("/getSubCategoriesById/{id}", name="getSubCategoriesById")
+     * @Route("/getRecursivelySubCategoriesById/{id}", name="getSubCategoriesById")
      * @Method("GET")
      */
-    public function getSubCategoriesById($id)
+    public function getRecursivelySubCategoriesById($id)
     {
+        if ($id == null)
+            return null;
         //$id = $request->get('id'); // Tu będzie wyszukiwanie po IDkach
 
         $repository = $this->getDoctrine()->getRepository('AppBundle:Category');
@@ -67,13 +69,75 @@ class searchMainCategoriesController extends Controller
         $i=0;
 
         foreach($categories as $category) {
-            $categoriesArray[$i]['nazwaKategori'] = $category->getName();
-            $categoriesArray[$i]['idKategori'] = $category->getId();
+            $categoriesArray[$i]['nazwaKategorii'] = $category->getName();
+            $categoriesArray[$i]['idKategorii'] = $category->getId();
+            //if ($category->getSubcategories != null)
+                $categoriesArray[$i]['podKategorie'] = $this->getRecursivelySubCategoriesById($category->getId());
             $i++;
         }
-        return new JsonResponse(array('categories' =>$categoriesArray));
+        return $categoriesArray;
     }
 
+
+    /**
+     * @Route("/getSubCategoriesById/{id}", name="getSubCategoriesById")
+     * @Method("GET")
+     */
+    public function getSubCategoriesById($id)
+    {
+        if ($id == null)
+            return null;
+        //$id = $request->get('id'); // Tu będzie wyszukiwanie po IDkach
+
+        $repository = $this->getDoctrine()->getRepository('AppBundle:Category');
+
+        $qb= $repository->createQueryBuilder('c');
+        $qb->select('c')
+            ->where('c.upper_category = :upper')
+            ->setParameter('upper', $id);
+        $query = $qb->getQuery();
+
+
+        $categories = $query -> getResult();
+        $categoriesArray = array();
+
+        $i=0;
+
+        foreach($categories as $category) {
+            $categoriesArray[$i]['nazwaKategorii'] = $category->getName();
+            $categoriesArray[$i]['idKategorii'] = $category->getId();
+            $i++;
+        }
+        return $categoriesArray;
+    }
+
+
+    /**
+     * @Route("/getCategoriesTree", name="getCategoriesTree")
+     * @Method("GET")
+     */
+    public function getCategoriesTree(Request $request) {
+        $repository = $this->getDoctrine()->getRepository('AppBundle:Category');
+        $qb= $repository->createQueryBuilder('c');
+        $qb->select('c')
+            ->where('c.upper_category is NULL');
+        $query = $qb->getQuery();
+
+
+        $categories = $query -> getResult();
+        $mainCategoriesArray = array();
+        $i=0;
+
+        foreach($categories as $category) {
+            $mainCategoriesArray[$i]['nazwaKategorii'] = $category->getName();
+            $mainCategoriesArray[$i]['idKategorii'] = $category->getId();
+            $mainCategoriesArray[$i]['podKategorie'] = $this->getRecursivelySubCategoriesById($category->getId()); //
+            $i++;
+        }
+
+        return new JsonResponse(array('mainCategories' =>$mainCategoriesArray));
+
+    }
 
 
 }

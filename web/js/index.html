@@ -1,0 +1,37 @@
+<html ng-app="countryApp">
+<head>
+    <meta charset="utf-8">
+    <title>Angular.js Example</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular-route.min.js"></script>
+    <script>
+        var countryApp = angular.module('countryApp', ['ngRoute']);
+
+
+
+
+
+        countryApp.controller('Menu', function ($scope, $http){
+            this.test = "Hello World";
+            var self = this;
+            $http.get('http://localhost:8000/search/getMainCategories').success(function(data){
+                //alert(data);
+                self.positions = data.categories;
+
+            });
+        });
+
+
+    </script>
+</head>
+<body ng-controller="Menu as C">
+{{ C.test }}
+<div ng-repeat="item in C.positions">
+    {{ item.nazwaKategori }}
+
+</div>
+
+
+
+</body>
+</html>

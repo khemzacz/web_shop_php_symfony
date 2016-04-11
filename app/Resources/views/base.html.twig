@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="myApp">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,7 @@
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" />
             <link rel="stylesheet" href="{{ asset('css/main.css') }}" />
-            <link rel="stylesheet" href="{{ asset('css/my.css') }}" />
+             <link rel="stylesheet" href="{{ asset('css/my.css') }}" />
         {% endblock %}
 
     </head>
@@ -91,13 +91,63 @@
             </div><!-- /.container-fluid -->
         </nav>
     {% endblock %}
-    {% block body %}
-    {% endblock %}
+
     {% block javascripts %}
         <script src="{{ asset('js/jquery-2.2.1.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-        <script stc="{{ asset('js/angular.min.js') }}"></script>
+        <script src="{{ asset('js/angular.min.js') }}"></script>
+
+
+        <script>
+            var myApp = angular.module('myApp', []);
+
+            myApp.controller('Menu', function ($scope, $http){
+                this.test ="lista Kategorii";
+                var self = this;
+                $http.get('/search/getCategoriesTree').success(function(data){
+                    self.positions = data.mainCategories;
+
+                });
+
+            });
+
+
+        </script>
+
     {% endblock %}
+
+
+    {% block body %}
+
+    {% endblock %}
+
+    {% verbatim %}
+        <div ng-controller="Menu as C">
+            <script type="text/ng-template" id="treeRenderer.html">
+                {{ category.nazwaKategorii }}
+                <ul ng-if="category.podKategorie">
+                    <li ng-repeat="category in category.podKategorie" ng-include="'treeRenderer.html'"></li>
+                </ul>
+            </script>
+            <ul>
+                <li ng-repeat="category in C.positions" ng-include="'treeRenderer.html'"></li>
+            </ul>
+        </div>
+
+
+        <!--
+            <button ng-click="C.refresh()">kategoria1</button>
+            <td ng-repeat="item in C.positions">
+                {{ item.nazwaKategori }}
+
+             </td>
+        <ul ng-controller="Menu as C">
+            <li ng-repeat="item in C.positions"><a href="" ng-click="C.subCategories(item.idKategorii)">{{ item.nazwaKategorii }}</a></li>
+
+        </ul>-->
+
+
+    {% endverbatim %}
 
     {% block fos_user_content %}
     {% endblock fos_user_content %}
