@@ -124,10 +124,12 @@
     {% verbatim %}
         <div ng-controller="Menu as C">
             <script type="text/ng-template" id="treeRenderer.html">
-                <a href="" ng-click="category.show = !category.show" >{{ category.nazwaKategorii }}</a>
+                <a href="" ng-if="category.podKategorie" ng-click="category.show = !category.show" >{{ category.nazwaKategorii }}</a>
+                <a href="" ng-if="!category.podKategorie">{{ category.nazwaKategorii }}</a> <!-- tu ma isc reakcja na ostateczna kategorie tj. wyswietlic liste produktow w tej kategorii-->
                 <ul ng-if="category.podKategorie" ng-init="upCat=category">
                     <li ng-repeat="category in category.podKategorie" ng-include="'treeRenderer.html'" ng-show="upCat.show"></li>
                 </ul>
+
             </script>
             <ul>
                 <li ng-repeat="category in C.positions" ng-include="'treeRenderer.html'"></li>
