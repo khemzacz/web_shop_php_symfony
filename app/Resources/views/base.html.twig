@@ -124,9 +124,9 @@
     {% verbatim %}
         <div ng-controller="Menu as C">
             <script type="text/ng-template" id="treeRenderer.html">
-                {{ category.nazwaKategorii }}
-                <ul ng-if="category.podKategorie">
-                    <li ng-repeat="category in category.podKategorie" ng-include="'treeRenderer.html'"></li>
+                <a href="" ng-click="category.show = !category.show" >{{ category.nazwaKategorii }}</a>
+                <ul ng-if="category.podKategorie" ng-init="upCat=category">
+                    <li ng-repeat="category in category.podKategorie" ng-include="'treeRenderer.html'" ng-show="upCat.show"></li>
                 </ul>
             </script>
             <ul>

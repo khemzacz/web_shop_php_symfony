@@ -73,6 +73,7 @@ class searchMainCategoriesController extends Controller
             $categoriesArray[$i]['idKategorii'] = $category->getId();
             //if ($category->getSubcategories != null)
                 $categoriesArray[$i]['podKategorie'] = $this->getRecursivelySubCategoriesById($category->getId());
+            $categoriesArray[$i]['show'] = false;
             $i++;
         }
         return $categoriesArray;
