@@ -15,6 +15,7 @@
 
             });
             self.getProducts = function(idCat){
+                self.product = null;
                 $http.get("/search/getProductsByCategory/"+idCat).success(function(data){
                     self.products = data.products;
                 });
@@ -55,7 +56,13 @@
                 </tr>
 
             </table>
-
+            <div class="myProduct" ng-if="C.product != null">
+                Name: {{ C.product[0].nazwa }}<br>
+                Price: {{ C.product[0].cena }} <br><br>
+                <img ng-src = "/products/images/{{ C.product[0].picture_path }}"/><br><br>
+                Availability: {{ C.product[0].dostepnosc }} <br>
+                Description: {{ C.product[0].opis }} <br>
+            </div>
 
         </div>
     </div>

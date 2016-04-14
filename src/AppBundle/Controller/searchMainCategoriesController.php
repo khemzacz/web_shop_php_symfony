@@ -168,7 +168,7 @@ class searchMainCategoriesController extends Controller
     }
 
     /**
-     * @Route("/search/getProductById/{id}", name="getProductById")
+     * @Route("/getProductById/{id}", name="getProductById")
      * @Method("GET")
      */
     public function getProductById($id){
@@ -178,17 +178,20 @@ class searchMainCategoriesController extends Controller
             ->where('c.id =:productid')
             ->setParameter('productid', $id);
         $query = $qb->getQuery();
-        $product= $query -> getResult();
+        $products= $query -> getResult();
         $productArray = array();
 
-        $productArray[0]['id'] = $product->getId();
-        $productArray[0]['nazwa'] = $product->getName();
-        $productArray[0]['cena'] = $product->getPrice();
-        $productArray[0]['dostepnosc'] = $product->getAmount();
-        $productArray[0]['opis'] = $product->getDescription();
-        $productArray[0]['picture_path'] = $product->getPicturePath();
+        $i = 0;
 
-
+        foreach($products as $product) {
+            $productArray[0]['id'] = $product->getId();
+            $productArray[0]['nazwa'] = $product->getName();
+            $productArray[0]['cena'] = $product->getPrice();
+            $productArray[0]['dostepnosc'] = $product->getAmount();
+            $productArray[0]['opis'] = $product->getDescription();
+            $productArray[0]['picture_path'] = $product->getPicturePath();
+            $i++;
+        }
 
         return new JsonResponse(array('product' =>$productArray));
     }
