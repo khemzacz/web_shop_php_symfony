@@ -198,6 +198,15 @@ class ProductController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $file = $entity->getPicturePath();
+            $fileName = md5(uniqid()).'.'.$file->guessExtension();
+
+            $PicturesDir = $this->container->getParameter('kernel.root_dir').'/../web/products/images';
+            $file->move($PicturesDir, $fileName);
+            $entity->setPicturePath($fileName);
+
+            $em->persist($entity);
             $em->flush();
 
             return $this->redirect($this->generateUrl('product_edit', array('id' => $id)));
