@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="myApp">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,12 +8,11 @@
             <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" />
             <link rel="stylesheet" href="{{ asset('css/my.css') }}" />
         {% endblock %}
-
     </head>
     <body>
     {% block logo %}
         <div class="row">
-            <div class="col-lg-3"><a href = "{{ path('homepage') }}"><img src="{{ asset('images/khemzacz.sklep.pl.png') }}"></a></div>
+            <div class="col-lg-3"><a href = "/#/"><img src="{{ asset('images/khemzacz.sklep.pl.png') }}"></a></div>
             <div class="col-lg-7" >
                 <div class = "not-a-real-shop">
                     <ul>
@@ -47,16 +46,12 @@
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
                         <li><a href="#">Link</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                        <li class="dropdown" ng-controller="Basket as B">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Basket <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="#">One more separated link</a></li>
+                                {%  verbatim %}
+                                    <li ng-repeat="prod in products">{{ prod.nazwa }}: {{ prod.ilosc }} </li>
+                                {% endverbatim %}
                             </ul>
                         </li>
                     </ul>
@@ -96,6 +91,7 @@
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         <!--<script src="{{ asset('js/ui-bootstrap-tpls-1.3.1.min.js') }}"></script> --> <!--boostrap ui dla angular nie wiem jeszcze konkretnie po co mi to -->
         <script src="{{ asset('js/angular.min.js') }}"></script>
+        <script src="{{ asset('js/angular-route.min.js') }}"></script>
 
 
 
@@ -104,7 +100,110 @@
 
 
     {% block body %}
+        <!--<div ng-app="myApp"> -->
+        {% verbatim %}
 
+
+        <script>
+
+
+
+            var myApp = angular.module('myApp', ['ngRoute']);
+
+            myApp.service('productService', function() {
+                var productList = [];
+                var product = null;
+
+                var addProduct = function(newObj) {
+                    productList.push(newObj);
+                };
+
+                var getProducts = function(){
+                    return productList;
+                };
+
+                var setProduct = function(obj){
+                    product = obj;
+                };
+
+                var getProduct = function(){
+                    return product;
+                };
+
+                return {
+                    addProduct: addProduct,
+                    setProduct: setProduct,
+                    getProduct: getProduct,
+                    getProducts: getProducts
+                };
+
+            });
+
+            myApp.config(function($routeProvider) {
+
+                $routeProvider.
+                when('/', {
+                    templateUrl: 'angular/IndexPage.html'
+                }).
+                when('/placeOrder', {
+                    templateUrl: 'angular/Order.html'
+                }).
+                otherwise({
+                    redirectTo: '/'
+                });
+
+
+            });
+
+            myApp.controller('ProductBrowser', function ($scope, $http, productService){
+                this.test ="lista Kategorii";
+                var self = this;
+                self.product = null;
+                $http.get('/search/getCategoriesTree').success(function(data){
+                    self.positions = data.mainCategories;
+
+                });
+                self.getProducts = function(idCat){
+                    self.product = null;
+                    $http.get("/search/getProductsByCategory/"+idCat).success(function(data){
+                        self.products = data.products;
+                    });
+                };
+                self.productDetails = function(idProd){
+                    self.products = null;
+                    $http.get("/search/getProductById/"+idProd).success(function(data){
+                        self.product = data.product;
+                    });
+                };
+                $scope.callToAddToProductList = function(currObj){
+                    productService.addProduct(currObj);
+                };
+                $scope.setProduct = function(obj){
+                    productService.setProduct(obj);
+                };
+            });
+
+            myApp.controller("Order", function($scope, $http, productService){
+                var self = this;
+                var amount = 0;
+                $scope.product = productService.getProduct();
+                self.submit = function(){
+                    $scope.product.ilosc= self.amount;
+                    productService.addProduct($scope.product);
+                }
+
+            });
+
+            myApp.controller("Basket", function($scope,$http, productService){
+                $scope.products = productService.getProducts();
+            });
+
+        </script>
+
+        <div ng-view></div>
+        {% endverbatim %}
+
+        <!--</div> -->
     {% endblock %}
 
 

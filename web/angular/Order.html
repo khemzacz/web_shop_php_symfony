@@ -1,0 +1,10 @@
+<div ng-controller="Order as C">
+    How many of {{ product.nazwa }} do You wish to add to basket?
+    <form ng-submit="C.submit()">
+        <input type="number" ng-model="C.amount" min="1" max ="{{ product.dostepnosc }}"
+        required>
+        <input type="submit" value="confim">
+
+    </form>
+
+</div>
