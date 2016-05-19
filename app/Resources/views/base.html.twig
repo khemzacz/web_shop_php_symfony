@@ -47,7 +47,7 @@
                         <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
                         <li><a href="#">Link</a></li>
                         <li class="dropdown" ng-controller="Basket as B">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Basket <span class="caret"></span></a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Basket <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 {%  verbatim %}
                                     <li ng-repeat="prod in products">{{ prod.nazwa }}: {{ prod.ilosc }} </li>
@@ -155,6 +155,21 @@
 
             });
 
+            myApp.factory('Orders', function($rootScope){
+                var orders = [];
+                var result = {
+                addOrder: function (Order){
+                        orders.push(Order);
+                        $rootScope.emit('orders.orderAdd',Order);
+                    },
+                    getOrders: function (){
+                        return orders;
+                    }
+
+                };
+                return result;
+            })
+
             myApp.controller('ProductBrowser', function ($scope, $http, productService){
                 this.test ="lista Kategorii";
                 var self = this;
@@ -183,13 +198,15 @@
                 };
             });
 
-            myApp.controller("Order", function($scope, $http, productService){
+            myApp.controller("Order", function($scope, $http, $location, productService){
                 var self = this;
                 var amount = 0;
                 $scope.product = productService.getProduct();
                 self.submit = function(){
                     $scope.product.ilosc= self.amount;
+                    //Orders.addOrder($scope.product);
                     productService.addProduct($scope.product);
+                    $location.path('/');
                 }
 
             });
