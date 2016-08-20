@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use AppBundle\Entity\Order;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
@@ -18,15 +19,41 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class salesController extends Controller
 {
     /**
-     * @Route("/order/{basket}/{user}", name="orderBasketForUser")
+     * @Route("/order/{basket}/{userid}", name="orderBasketForUser")
      * @Method("GET")
      */
-    public function orderBasketForUser(){
+    public function orderBasketForUser($basket,$userid){
         //$repository = $this->getDoctrine()->getRepository('AppBundle:Order');
         //$gb = $repository->createQueryBuilder('o');
         //$gb->insert
-        $em = $this->get('doctrine.orm.entity_manager');//getDoctrine()->getEntityManager();
+        try {
+            $em = $this->get('doctrine.orm.entity_manager');//getDoctrine()->getEntityManager();
+            $order = new Order();
+            $user = $em->find('AppBundle\Entity\User', $userid);
+            $order->setUser($user);
+            $repository = $this->getDoctrine()->getRepository('AppBundle:State');
+//            $qb= $repository->createQueryBuilder('s');
+//            $qb->select('s')
+//                ->where('s.id =:stateid')
+//                ->setParameter('stateid', 1);
+//            $query = $qb->getQuery();
+//            $state= $query -> getResult();
+            $state = $em->find('AppBundle\Entity\State',1);
+            $order->setState($state);
+            $order->setPlacingDate(time());
+            foreach ($basket as $product){
+                $order->addProduct($product);
+            }
+            $em->persist($order);
+            $em->flush();
 
+        } catch (Exception $e)
+        {
+            return new JsonResponse('1');
+        }
+
+
+        return new JsonResponse('0');
 
     }
 

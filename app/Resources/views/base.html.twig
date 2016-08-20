@@ -45,7 +45,7 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                        <li ng-controller="Order as C"><a href="#/">Place an order</a></li>
+                        <li ng-controller="Order as C"><a ng-click="placeAnOrder()" href="#/">Place an order</a></li>
                         <li class="dropdown" ng-controller="Basket as B">
                             <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Basket <span class="caret"></span></a>
                             <ul class="dropdown-menu">
