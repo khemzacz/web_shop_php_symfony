@@ -41,15 +41,12 @@ class Order
      * @ORM\JoinColumn(name="state_id", referencedColumnName="id")
      */
     protected $state;
+
     /**
-     * @ORM\ManyToMany(targetEntity="Product")
-     * @ORM\JoinTable(name="orders_products",
-     *     joinColumns={@ORM\JoinColumn(name="order_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="product_id", referencedColumnName="id")}
-     *     )
-     *
+     * @ORM\OneToMany(targetEntity="OrderProducts", mappedBy="order")
      */
-    protected $products;
+    protected $order_products;
+
     /**
      * Get id
      *

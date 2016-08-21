@@ -22,14 +22,14 @@ class salesController extends Controller
      * @Route("/order/{basket}/{userid}", name="orderBasketForUser")
      * @Method("GET")
      */
-    public function orderBasketForUser($basket,$userid){
+    public function orderBasketForUser($basket,$user){
         //$repository = $this->getDoctrine()->getRepository('AppBundle:Order');
         //$gb = $repository->createQueryBuilder('o');
         //$gb->insert
         try {
             $em = $this->get('doctrine.orm.entity_manager');//getDoctrine()->getEntityManager();
             $order = new Order();
-            $user = $em->find('AppBundle\Entity\User', $userid);
+            $user = $em->find('AppBundle\Entity\User', $user->getId());
             $order->setUser($user);
             $repository = $this->getDoctrine()->getRepository('AppBundle:State');
 //            $qb= $repository->createQueryBuilder('s');
@@ -42,7 +42,7 @@ class salesController extends Controller
             $order->setState($state);
             $order->setPlacingDate(time());
             foreach ($basket as $product){
-                $order->addProduct($product);
+               // $order->addProduct($product);
             }
             $em->persist($order);
             $em->flush();

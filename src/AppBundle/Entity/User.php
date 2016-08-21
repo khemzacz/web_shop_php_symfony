@@ -68,4 +68,8 @@ class User extends BaseUser
     {
         return $this->orders;
     }
+
+    public function getId(){
+        return $this->id;
+    }
 }

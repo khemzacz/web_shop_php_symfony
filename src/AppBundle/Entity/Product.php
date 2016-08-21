@@ -49,6 +49,11 @@ class Product
      */
     protected $picture_path;
 
+    /**
+     * @ORM\OneToMany(targetEntity="OrderProducts", mappedBy="order")
+     */
+    protected $order_products;
+
     public function getAbsolutePath(){
         return null === $this->picture_path ? null : $this->getUploadDir().'/'.$this->path;
     }
