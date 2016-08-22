@@ -28,6 +28,10 @@ class State
      */
     protected $name;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Order", mappedBy="state")
+     */
+    protected $orders;
 
     /**
      * Get id

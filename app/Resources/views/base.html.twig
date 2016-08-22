@@ -45,7 +45,9 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                        <li ng-controller="Order as C"><a ng-click="placeAnOrder({{ app.user }})" href="#/">Place an order</a></li>
+                        {% if app.user %}
+                            <li ng-controller="Order as C"><a ng-click="C.placeAnOrder({{ app.user.id }})" href="#/">Place an order</a></li>
+                        {% endif %}
                         <li class="dropdown" ng-controller="Basket as B">
                             <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Basket <span class="caret"></span></a>
                             <ul class="dropdown-menu">
@@ -215,7 +217,10 @@
                 };
 
                 self.placeAnOrder = function($userid){
-                    $http.get("/sales/order/"+productService.getProducts()+"/"+userid).success(function(data){
+                    if (productService.getProducts() == '')
+                           alert('No products in the basket!');
+
+                    $http.get("/sales/order/"+JSON.stringify(productService.getProducts())+"/"+$userid).success(function(data){
 
                     });
                 };

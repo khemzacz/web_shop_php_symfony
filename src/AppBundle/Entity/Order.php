@@ -8,37 +8,36 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM; # looks like "#define" from c++
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="order")
+ * @ORM\Table(name="`order`")
  */
-
 class Order
 {
     /**
-     * @ORM\Column(type="integer")
      * @ORM\Id
+     * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
     /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="orders" )
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="orders")
+     * @ORM\JoinColumn(name="`user_id`", referencedColumnName="id")
      */
     protected $user;
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(name="`placing_date`", type="datetime")
      */
     protected $placing_date;
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(name="`completion_date`", type="datetime", nullable=true)
      */
     protected $completion_date;
     /**
-     * @ORM\OneToOne(targetEntity="State")
-     * @ORM\JoinColumn(name="state_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="State", inversedBy="orders")
+     * @ORM\JoinColumn(name="`state_id`", referencedColumnName="id")
      */
     protected $state;
 
