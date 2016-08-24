@@ -52,7 +52,7 @@
                             <a class="dropdown-toggle" ng-click="B.refreshBasket()" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Basket <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 {%  verbatim %}
-                                    <li ng-repeat="prod in products">{{ prod.nazwa }}: {{ prod.ilosc }}, {{ prod.cena*prod.ilosc }} zł<div ng-click="B.removeProduct(prod)" style="width: 2vh; height: 2vh;">{% endverbatim %}<img src="{{ asset('images/trash_icon.png') }}" style="width: auto; height: 100%;">{% verbatim %}</div></li>
+                                    <li ng-repeat="prod in products" style="min-width: 300px; display: inline-block;"><div style="width: 90%; height: 2vh; float: left;">{{ prod.nazwa }}: {{ prod.ilosc }}, {{ prod.cena*prod.ilosc }} zł</div><div style="width: 10%; height: 2vh; float: left;">{% endverbatim %}<img ng-click="B.removeProduct(prod)" src="{{ asset('images/trash_icon.png') }}" style="width: auto; height: 100%;">{% verbatim %}</div></li>
                                     <li></li>
                                 {% endverbatim %}
                             </ul>
