@@ -196,4 +196,10 @@ class searchMainCategoriesController extends Controller
         return new JsonResponse(array('product' =>$productArray));
     }
 
+    public function getOrdersByUserId($id){
+
+
+
+    }
+
 }

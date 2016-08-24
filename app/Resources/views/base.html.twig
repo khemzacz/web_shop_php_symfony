@@ -44,12 +44,12 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
                         {% if app.user %}
+                            <li ng-controller="Order as C"><a href="#/">My orders</a></li>
                             <li ng-controller="Order as C"><a ng-click="C.placeAnOrder({{ app.user.id }})" href="#/">Place an order</a></li>
                         {% endif %}
                         <li class="dropdown" ng-controller="Basket as B">
-                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Basket <span class="caret"></span></a>
+                            <a class="dropdown-toggle" ng-click="B.refreshBasket()" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Basket <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 {%  verbatim %}
                                     <li ng-repeat="prod in products">{{ prod.nazwa }}: {{ prod.ilosc }}, {{ prod.cena*prod.ilosc }} zł </li>
@@ -133,11 +133,16 @@
                     return product;
                 };
 
+                var removeAllProducts = function(){
+                    productList = [];
+                };
+
                 return {
                     addProduct: addProduct,
                     setProduct: setProduct,
                     getProduct: getProduct,
-                    getProducts: getProducts
+                    getProducts: getProducts,
+                    removeAllProducts: removeAllProducts
                 };
 
             });
@@ -201,7 +206,7 @@
                 };
             });
 
-            myApp.controller("Order", function($scope, $http, $location, productService){
+            myApp.controller('Order', function($scope, $http, $location, productService){
                 var self = this;
                 var amount = 0;
                 $scope.product = productService.getProduct();
@@ -217,18 +222,32 @@
                 };
 
                 self.placeAnOrder = function($userid){
-                    if (productService.getProducts() == '')
+                    if (productService.getProducts() == ''){
                            alert('No products in the basket!');
+                           return;
+                    }
 
-                    $http.get("/sales/order/"+JSON.stringify(productService.getProducts())+"/"+$userid).success(function(data){
 
+                        $http.get("/sales/order/"+JSON.stringify(productService.getProducts())+"/"+$userid).success(function(data){
+                            if(data==0){
+                                alert('Success: Your order has been placed.')
+                                productService.removeAllProducts();
+                            }
+                            else{
+                                alert('Failure: Order could not be placed.')
+                            }
                     });
                 };
 
             });
 
-            myApp.controller("Basket", function($scope,$http, productService){
+            myApp.controller('Basket', function($scope,$http, productService){
+                var self = this;
                 $scope.products = productService.getProducts();
+
+                self.refreshBasket = function(){
+                    $scope.products = productService.getProducts();
+                };
             });
 
         </script>
