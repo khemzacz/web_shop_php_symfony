@@ -196,10 +196,47 @@ class searchMainCategoriesController extends Controller
         return new JsonResponse(array('product' =>$productArray));
     }
 
-    public function getOrdersByUserId($id){
+    /**
+     * @Route("/getOrdersByUserId/{userid}", name="getOrdersByUserId")
+     * @Method("GET")
+     */
+    public function getOrdersByUserId($userid){
+        $repository = $this->getDoctrine()->getRepository('AppBundle:Order');
+        $em = $this->get('doctrine.orm.entity_manager');
+        $user = $em->find('AppBundle\Entity\User',$userid);
+        $qb= $repository->createQueryBuilder('o');
+        $qb->select('o')
+            ->where('o.user =:user')
+            ->setParameter('user',$user);
+        $query = $qb->getQuery();
+        $orders= $query -> getResult();
+
+        $ordersArray = array();
 
 
 
+        $i=0; $j=0;
+        foreach($orders as $order){
+            $ordersArray[$i]['id'] = $order->getId();
+            $ordersArray[$i]['placingDate'] = $order->getPlacingDate();
+            $ordersArray[$i]['completionDate'] = $order->getCompletionDate();
+            $ordersArray[$i]['state'] = $order->getState();
+
+            $orderProducts = $em->getRepository('AppBundle\Entity\OrderProducts')->findBy(array('order' => $order));
+            foreach($orderProducts as $orderProduct){
+                $product = $orderProduct->getProduct();
+                $ordersArray[$i]['products'][$j]['id'] = $product->getId();
+                $ordersArray[$i]['products'][$j]['name'] = $product->getName();
+                $ordersArray[$i]['products'][$j]['amount'] = $orderProduct->getNumber();
+                $ordersArray[$i]['products'][$j]['price'] = $orderProduct->getNumber() * $product->getPrice();
+                $j++;
+            }
+            $i++;
+        }
+
+        exit(dump($ordersArray));
+
+        return new JsonResponse(array('ordersArray' => $ordersArray));
     }
 
 }

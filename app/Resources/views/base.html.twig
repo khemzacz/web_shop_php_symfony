@@ -45,7 +45,7 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         {% if app.user %}
-                            <li ng-controller="Order as C"><a href="#/">My orders</a></li>
+                            <li ng-controller="Order as C"><a ng-click="C.showMyOrders({{ app.user.id }})">My orders</a></li>
                             <li ng-controller="Order as C"><a ng-click="C.placeAnOrder({{ app.user.id }})" href="#/">Place an order</a></li>
                         {% endif %}
                         <li class="dropdown" ng-controller="Basket as B">
@@ -165,6 +165,9 @@
                 when('/placeOrder', {
                     templateUrl: 'angular/Order.html'
                 }).
+                when('/myOrders',{
+                    templateUrl: 'angular/MyOrders.html'
+                }).
                 otherwise({
                     redirectTo: '/'
                 });
@@ -239,8 +242,6 @@
                            alert('No products in the basket!');
                            return;
                     }
-
-
                         $http.get("/sales/order/"+JSON.stringify(productService.getProducts())+"/"+$userid).success(function(data){
                             if(data==0){
                                 alert('Success: Your order has been placed. Thank You sir for using our services.')
@@ -258,6 +259,11 @@
                     });
                 };
 
+                self.showMyOrders = function (){
+
+
+                    $location.path('/myOrders');
+                }
             });
 
             myApp.controller('Basket', function($scope,$http, productService){
