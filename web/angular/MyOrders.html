@@ -1,4 +1,10 @@
-<div>
+<div ng-controller="Order as O">
 
+    <ul>
+        <li ng-repeat="order in O.orders">
+           {{ order.placingDate }}&emsp;{{ order.state }}
+        </li>
+
+    </ul>
 
 </div>

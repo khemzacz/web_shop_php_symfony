@@ -45,8 +45,8 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         {% if app.user %}
-                            <li ng-controller="Order as C"><a ng-click="C.showMyOrders({{ app.user.id }})">My orders</a></li>
-                            <li ng-controller="Order as C"><a ng-click="C.placeAnOrder({{ app.user.id }})" href="#/">Place an order</a></li>
+                            <li ng-controller="Order as O"><a ng-click="O.showMyOrders({{ app.user.id }})">My orders</a></li>
+                            <li ng-controller="Order as O"><a ng-click="O.placeAnOrder({{ app.user.id }})" href="#/">Place an order</a></li>
                         {% endif %}
                         <li class="dropdown" ng-controller="Basket as B">
                             <a class="dropdown-toggle" ng-click="B.refreshBasket()" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Basket <span class="caret"></span></a>
@@ -115,6 +115,19 @@
             myApp.service('productService', function() {
                 var productList = [];
                 var product = null;
+                var orderList = [];
+
+                var addOrder = function(newObj){
+                    orderList.push(newObj);
+                };
+
+                var getOrders = function(){
+                    return orderList;
+                };
+
+                var removeAllOrders = function(){
+                    orderList = [];
+                };
 
                 var addProduct = function(newObj) {
                     productList.push(newObj);
@@ -151,7 +164,10 @@
                     getProduct: getProduct,
                     getProducts: getProducts,
                     removeProduct: removeProduct,
-                    removeAllProducts: removeAllProducts
+                    removeAllProducts: removeAllProducts,
+                    addOrder: addOrder,
+                    getOrders: getOrders,
+                    removeAllOrders: removeAllOrders
                 };
 
             });
@@ -175,20 +191,20 @@
 
             });
 
-            myApp.factory('Orders', function($rootScope){
-                var orders = [];
-                var result = {
-                addOrder: function (Order){
-                        orders.push(Order);
-                        $rootScope.emit('orders.orderAdd',Order);
-                    },
-                    getOrders: function (){
-                        return orders;
-                    }
-
-                };
-                return result;
-            })
+//            myApp.factory('Orders', function($rootScope){
+//                var orders = [];
+//                var result = {
+//                addOrder: function (Order){
+//                        orders.push(Order);
+//                        $rootScope.emit('orders.orderAdd',Order);
+//                    },
+//                    getOrders: function (){
+//                        return orders;
+//                    }
+//
+//                };
+//                return result;
+//            })
 
             myApp.controller('ProductBrowser', function ($scope, $http, productService){
                 this.test ="lista Kategorii";
@@ -225,17 +241,18 @@
             myApp.controller('Order', function($scope, $http, $location, productService){
                 var self = this;
                 var amount = 0;
+                self.orders = productService.getOrders();
                 $scope.product = productService.getProduct();
                 self.submit = function(){
                     $scope.product.ilosc= self.amount;
                     //Orders.addOrder($scope.product);
                     productService.addProduct($scope.product);
                     $location.path('/');
-                }
-                self.order = function(){
-
-
                 };
+//                self.order = function(){
+//
+//
+//                };
 
                 self.placeAnOrder = function($userid){
                     if (productService.getProducts() == ''){
@@ -259,11 +276,17 @@
                     });
                 };
 
-                self.showMyOrders = function (){
-
-
-                    $location.path('/myOrders');
-                }
+                self.showMyOrders = function ($userid){
+                    $http.get("/search/getOrdersByUserId/"+$userid).success(function(data){
+                        productService.removeAllOrders();
+                        self.orders = data.ordersArray;
+                        for (var i=0;i<self.orders.length;i++)
+                        {
+                            productService.addOrder(self.orders[i]);
+                        }
+                        $location.path('/myOrders');
+                    });
+                };
             });
 
             myApp.controller('Basket', function($scope,$http, productService){

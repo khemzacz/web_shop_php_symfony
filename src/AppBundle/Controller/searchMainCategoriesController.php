@@ -220,7 +220,8 @@ class searchMainCategoriesController extends Controller
             $ordersArray[$i]['id'] = $order->getId();
             $ordersArray[$i]['placingDate'] = $order->getPlacingDate();
             $ordersArray[$i]['completionDate'] = $order->getCompletionDate();
-            $ordersArray[$i]['state'] = $order->getState();
+            $ordersArray[$i]['stateid'] = $order->getState()->getId();
+            $ordersArray[$i]['state'] = $order->getState()->getName();
 
             $orderProducts = $em->getRepository('AppBundle\Entity\OrderProducts')->findBy(array('order' => $order));
             foreach($orderProducts as $orderProduct){
@@ -234,7 +235,7 @@ class searchMainCategoriesController extends Controller
             $i++;
         }
 
-        exit(dump($ordersArray));
+        //exit(dump($ordersArray));
 
         return new JsonResponse(array('ordersArray' => $ordersArray));
     }
