@@ -104,7 +104,6 @@
 
     {% block body %}
         <!--<div ng-app="myApp"> -->
-        {% verbatim %}
 
 
         <script>
@@ -201,8 +200,9 @@
                 self.getProducts = function(idCat){
                     self.product = null;
                     $http.get("/search/getProductsByCategory/"+idCat).success(function(data){
-                        self.products = data.products;{% endverbatim %}
-                        self.user =  {% if app.user is not null %}{{ app.user.id }} {% else %} null {% endif %};{% verbatim %}
+                        self.products = data.products;
+                        self.user =  {% if app.user is not null %}{{ app.user.id }} {% else %} null {% endif %};
+
                     });
                 };
                 self.productDetails = function(idProd){
@@ -243,8 +243,14 @@
 
                         $http.get("/sales/order/"+JSON.stringify(productService.getProducts())+"/"+$userid).success(function(data){
                             if(data==0){
-                                alert('Success: Your order has been placed.')
+                                alert('Success: Your order has been placed. Thank You sir for using our services.')
                                 productService.removeAllProducts();
+                            }
+                            else if(data==2){
+                                alert('Failure: Your session has expired. Log in again pls.')
+                            }
+                            else if(data==3){
+                                alert('Failure: Is Your basket empty, sir?');
                             }
                             else{
                                 alert('Failure: Order could not be placed.')
@@ -271,7 +277,6 @@
         </script>
 
         <div ng-view></div>
-        {% endverbatim %}
 
         <!--</div> -->
     {% endblock %}

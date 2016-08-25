@@ -26,6 +26,12 @@ class salesController extends Controller
      */
     public function orderBasketForUser($basket,$userid){
         try {
+            if ($userid == ''){
+                return new JsonResponse('2');
+            }
+            if ($basket == ''){
+                return new JsonResponse('3');
+            }
             $em = $this->get('doctrine.orm.entity_manager');//getDoctrine()->getEntityManager();
             $order = new Order;
             $user = $em->find('AppBundle\Entity\User', $userid);
