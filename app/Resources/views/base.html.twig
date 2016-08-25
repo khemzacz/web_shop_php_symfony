@@ -192,6 +192,8 @@
                 this.test ="lista Kategorii";
                 var self = this;
                 self.product = null;
+                self.user = null;
+
                 $http.get('/search/getCategoriesTree').success(function(data){
                     self.positions = data.mainCategories;
 
@@ -199,7 +201,8 @@
                 self.getProducts = function(idCat){
                     self.product = null;
                     $http.get("/search/getProductsByCategory/"+idCat).success(function(data){
-                        self.products = data.products;
+                        self.products = data.products;{% endverbatim %}
+                        self.user =  {% if app.user is not null %}{{ app.user.id }} {% else %} null {% endif %};{% verbatim %}
                     });
                 };
                 self.productDetails = function(idProd){

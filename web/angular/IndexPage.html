@@ -26,7 +26,7 @@
             <img ng-src = "/products/images/{{ C.product[0].picture_path }}"/><br><br>
             Availability: {{ C.product[0].dostepnosc }} <br>
             Description: {{ C.product[0].opis }} <br>
-            <div class="btn-group-vertical">
+            <div class="btn-group-vertical" ng-if="C.user != null">
                 <a href="#/placeOrder" class="btn btn-default" ng-click="setProduct(C.product[0])">add To Basket</a>
             </div>
         </div>
