@@ -218,8 +218,19 @@ class searchMainCategoriesController extends Controller
         $i=0; $j=0;
         foreach($orders as $order){
             $ordersArray[$i]['id'] = $order->getId();
-            $ordersArray[$i]['placingDate'] = $order->getPlacingDate();
-            $ordersArray[$i]['completionDate'] = $order->getCompletionDate();
+            $placingDate = $order->getPlacingDate();
+            if($placingDate)
+            {
+                $placingDate->format('d-m-Y H:i');
+            }
+
+            $ordersArray[$i]['placingDate'] = $placingDate;
+            $completionDate = $order->getCompletionDate();
+            if($completionDate)
+            {
+                $completionDate->format('Y-m-d H:i:s');
+            }
+            $ordersArray[$i]['completionDate'] = $completionDate;
             $ordersArray[$i]['stateid'] = $order->getState()->getId();
             $ordersArray[$i]['state'] = $order->getState()->getName();
 
