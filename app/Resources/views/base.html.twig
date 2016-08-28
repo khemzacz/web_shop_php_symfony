@@ -58,9 +58,9 @@
                             </ul>
                         </li>
                     </ul>
-                    <div class="navbar-form navbar-left" role="search">
+                    <div class="navbar-form navbar-left" role="search" ng-controller="searchResults as S">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search for products" ng-change="">
+                            <input type="text" class="form-control" placeholder="Search for products">
                         </div>
                         <button type="submit" class="btn btn-default">Search</button>
                     </div>
@@ -172,7 +172,7 @@
 
             });
 
-            myApp.service('searchService', function(){
+            myApp.service('searchResultsService', function(){
                 var productResults = [];
 
                 var addProductResult = function(newObj){
@@ -258,6 +258,26 @@
                 $scope.setProduct = function(obj){
                     productService.setProduct(obj);
                 };
+            });
+
+            myApp.controller('searchResults', function($scope, $http,$location, $route, searchResultsService){
+                var self = this;
+                self.searchProductsResults = [];
+
+                self.searchProductsByChain = function($chain){
+                    if($chain.length <2){
+                        return;
+                    }
+                    $http.get("/search/getProductsMatchingToName/"+$chain).success(function(data){
+                        self.searchProductsResults = data.productsArray;
+                        searchResultsService.removeAllProductResults();
+                        for(var i=0;i<self.searchProductsResults.length;i++){
+                            searchResultsService.addProductResult(self.searchProductsResults[i]);
+                        }
+                    });
+
+                };
+
             });
 
             myApp.controller('Order', function($scope, $http, $location, $route, productService){
