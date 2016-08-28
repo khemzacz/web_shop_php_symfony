@@ -172,6 +172,28 @@
 
             });
 
+            myApp.service('searchService', function(){
+                var productResults = [];
+
+                var addProductResult = function(newObj){
+                    productResults.push(newObj);
+                };
+
+                var removeAllProductResults = function(){
+                    productResults = [];
+                };
+
+                var getAllProductResults = function(){
+                    return productResults;
+                };
+
+                return{
+                    addProductResult: addProductResult,
+                    removeAllProductResults: removeAllProductResults,
+                    getAllProductResults: getAllProductResults
+                };
+            })
+
             myApp.config(function($routeProvider) {
 
                 $routeProvider.
