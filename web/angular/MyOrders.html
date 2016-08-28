@@ -10,12 +10,15 @@
 
 
         <div class="row" ng-repeat="order in O.orders" style="text-align: center;">
-            <div href="" ng-click="order.showProducts = !order.showProducts" >
-                <div class="col-md-2"> {{ order.id }} </div>
-                <div class="col-md-2"> {{ order.state }} </div>
-                <div class="col-md-3"> {{ order.placingDate }} </div>
-                <div class="col-md-3"> {{ order.completionDate }} </div>
-                <div class="col-md-2"> {{ order.value }} PLN </div>
+            <div>
+                <a href="" ng-click="order.showProducts = !order.showProducts">
+                    <div class="col-md-2"> {{ order.id }} </div>
+                    <div class="col-md-2"> {{ order.state }} </div>
+                    <div class="col-md-3"> {{ order.placingDate }} </div>
+                    <div class="col-md-3"> {{ order.completionDate }} </div>
+                    <div class="col-md-2"> {{ order.value }} PLN </div>
+                </a>
+
                 <div ng-if="order.showProducts">
                     <div class="row">
                         <div class="col-md-2"> Identifier </div>
