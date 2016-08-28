@@ -3,18 +3,38 @@
         <div class="row" style="margin-bottom: 3vh; text-align: center;" >
             <div class="col-md-2"> Order number </div>
             <div class="col-md-2"> State </div>
-            <div class="col-md-2"> Placing Date </div>
-            <div class="col-md-2"> Completion Date </div>
+            <div class="col-md-3"> Placing Date </div>
+            <div class="col-md-3"> Completion Date </div>
             <div class="col-md-2"> Value </div>
         </div>
 
 
         <div class="row" ng-repeat="order in O.orders" style="text-align: center;">
-            <div class="col-md-2"> {{ order.id }} </div>
-            <div class="col-md-2"> {{ order.state }} </div>
-            <div class="col-md-2"> {{ order.placingDate }} </div>
-            <div class="col-md-2"> {{ order.completionDate }} </div>
-            <div class="col-md-2"> {{ order.value }} PLN </div>
+            <div href="" ng-click="order.showProducts = !order.showProducts" >
+                <div class="col-md-2"> {{ order.id }} </div>
+                <div class="col-md-2"> {{ order.state }} </div>
+                <div class="col-md-3"> {{ order.placingDate }} </div>
+                <div class="col-md-3"> {{ order.completionDate }} </div>
+                <div class="col-md-2"> {{ order.value }} PLN </div>
+                <div ng-if="order.showProducts">
+                    <div class="row">
+                        <div class="col-md-2"> Identifier </div>
+                        <div class="col-md-4"> Name </div>
+                        <div class="col-md-2"> Amount </div>
+                        <div class="col-md-2"> Total price </div>
+                        <div class="col-md-2"> Unit price </div>
+                    </div>
+                    <div class="row" ng-repeat="product in order.products">
+                        <div class="col-md-2"> {{ product.id }} </div>
+                        <div class="col-md-4"> {{ product.name }}  </div>
+                        <div class="col-md-2"> {{ product.amount }} </div>
+                        <div class="col-md-2"> {{ product.price }} PLN </div>
+                        <div class="col-md-2"> {{ product.price/product.amount }} PLN </div>
+                    </div>
+
+                </div>
+            </a>
+
         </div>
 
     </div>

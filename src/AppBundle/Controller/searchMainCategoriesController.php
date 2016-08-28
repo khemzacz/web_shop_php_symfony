@@ -247,6 +247,7 @@ class searchMainCategoriesController extends Controller
                 $j++;
             }
             $ordersArray[$i]['value'] = $price;
+            $ordersArray[$i]['showProducts'] = false;
             $i++;
         }
 
