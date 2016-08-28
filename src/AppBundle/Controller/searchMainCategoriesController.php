@@ -221,28 +221,32 @@ class searchMainCategoriesController extends Controller
             $placingDate = $order->getPlacingDate();
             if($placingDate)
             {
-                $placingDate->format('d-m-Y H:i');
+                //$placingDate->format('d-m-Y H:i');
+                $placingDate = $placingDate->format('d-m-Y H:i');
             }
 
             $ordersArray[$i]['placingDate'] = $placingDate;
             $completionDate = $order->getCompletionDate();
             if($completionDate)
             {
-                $completionDate->format('Y-m-d H:i:s');
+                $completionDate = $completionDate->format('Y-m-d H:i:s');
+                //$completionDate = $completionDate->date;
             }
             $ordersArray[$i]['completionDate'] = $completionDate;
             $ordersArray[$i]['stateid'] = $order->getState()->getId();
             $ordersArray[$i]['state'] = $order->getState()->getName();
-
+            $ordersArray[$i]['value'] = 0;
+            $price = 0;
             $orderProducts = $em->getRepository('AppBundle\Entity\OrderProducts')->findBy(array('order' => $order));
             foreach($orderProducts as $orderProduct){
                 $product = $orderProduct->getProduct();
                 $ordersArray[$i]['products'][$j]['id'] = $product->getId();
                 $ordersArray[$i]['products'][$j]['name'] = $product->getName();
                 $ordersArray[$i]['products'][$j]['amount'] = $orderProduct->getNumber();
-                $ordersArray[$i]['products'][$j]['price'] = $orderProduct->getNumber() * $product->getPrice();
+                $price += $ordersArray[$i]['products'][$j]['price'] = $orderProduct->getNumber() * $product->getPrice();
                 $j++;
             }
+            $ordersArray[$i]['value'] = $price;
             $i++;
         }
 
