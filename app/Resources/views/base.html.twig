@@ -62,7 +62,11 @@
                         <div class="form-group">
                             <input type="text" class="form-control" id="search-box" placeholder="Search for products"
                                    ng-model="searchModel" ng-model-options="{debounce: 750}" ng-change="S.quicksearch()">
-
+                            <div class="dropdown" ng-if="S.quickProductResults" ng-repeat="product in S.quickProductResults">
+                                {% verbatim %}
+                                    <a href="" ng-click="S.proceedToProductDetails(product.id)" >{{ product.name }}</a>
+                                {% endverbatim %}
+                            </div>
 
 
                         </div>
@@ -177,24 +181,40 @@
             });
 
             myApp.service('searchResultsService', function(){
+                var quickProductResults = [];
                 var productResults = [];
 
                 var addProductResult = function(newObj){
                     productResults.push(newObj);
                 };
 
-                var removeAllProductResults = function(){
+                var removeProductResults = function(){
                     productResults = [];
                 };
 
-                var getAllProductResults = function(){
+                var getProductResults = function(){
                     return productResults;
                 };
 
+                var addQuickProductResult = function(newObj){
+                    quickProductResults.push(newObj);
+                };
+
+                var removeQuickProductResults = function(){
+                    quickProductResults = [];
+                };
+
+                var getQuickProductResults = function(){
+                    return quickProductResults;
+                };
+
                 return{
+                    addQuickProductResult: addQuickProductResult,
+                    removeQuickProductResults: removeQuickProductResults,
+                    getQuickProductResults: getQuickProductResults,
                     addProductResult: addProductResult,
-                    removeAllProductResults: removeAllProductResults,
-                    getAllProductResults: getAllProductResults
+                    removeProductResults: removeProductResults,
+                    getProductResults: getProductResults
                 };
             })
 
@@ -209,6 +229,9 @@
                 }).
                 when('/myOrders',{
                     templateUrl: 'angular/MyOrders.html'
+                }).
+                when('/productDetails',{
+                    templateUrl: 'angular/ProductDetails.html'
                 }).
                 otherwise({
                     redirectTo: '/'
@@ -235,8 +258,8 @@
             myApp.controller('ProductBrowser', function ($scope, $http, productService){
                 this.test ="lista Kategorii";
                 var self = this;
-                self.product = null;
-                self.user = null;
+                self.product = productService.getProduct();
+                self.user = {% if app.user is not null %}{{ app.user.id }} {% else %} null {% endif %};
 
                 $http.get('/search/getCategoriesTree').success(function(data){
                     self.positions = data.mainCategories;
@@ -246,7 +269,7 @@
                     self.product = null;
                     $http.get("/search/getProductsByCategory/"+idCat).success(function(data){
                         self.products = data.products;
-                        self.user =  {% if app.user is not null %}{{ app.user.id }} {% else %} null {% endif %};
+                        //self.user =  {% if app.user is not null %}{{ app.user.id }} {% else %} null {% endif %};
 
                     });
                 };
@@ -264,9 +287,9 @@
                 };
             });
 
-            myApp.controller('searchResults', function($scope, $http,$location, $route, searchResultsService){
+            myApp.controller('searchResults', function($scope, $http,$location, $route, searchResultsService, productService){
                 var self = this;
-                self.searchProductsResults = [];
+                self.quickProductResults = searchResultsService.getQuickProductResults();
 
                 self.quicksearch = function(){
                     $chain = angular.element('#search-box').val();
@@ -274,13 +297,19 @@
                         return;
                     }
                     $http.get("/search/getProductsMatchingToName/"+$chain).success(function(data){
-                        self.searchProductsResults = data.productsArray;
-                        searchResultsService.removeAllProductResults();
-                        for(var i=0;i<self.searchProductsResults.length;i++){
-                            searchResultsService.addProductResult(self.searchProductsResults[i]);
+                        self.quickProductResults = data.productsArray;
+                        searchResultsService.removeQuickProductResults();
+                        for(var i=0;i<self.quickProductResults.length;i++){
+                            searchResultsService.addQuickProductResult(self.quickProductResults[i]);
                         }
                     });
+                };
 
+                self.proceedToProductDetails = function(idProd){
+                    $http.get("/search/getProductById/"+idProd).success(function(data){
+                        productService.setProduct(data.product);
+                    });
+                    $location.path('/productDetails');
                 };
 
             });
