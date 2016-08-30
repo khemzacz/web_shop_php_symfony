@@ -62,10 +62,12 @@
                         <div class="form-group">
                             <input type="text" class="form-control" id="search-box" placeholder="Search for products"
                                    ng-model="searchModel" ng-model-options="{debounce: 750}" ng-change="S.quicksearch()">
-                            <div class="dropdown" ng-if="S.quickProductResults" ng-repeat="product in S.quickProductResults">
+                            <div class="dropdown" ng-if="S.quickProductResults" >
+                                <ul class="dropdown-menu" id="quickSearchDropDown">
                                 {% verbatim %}
-                                    <a href="" ng-click="S.proceedToProductDetails(product.id)" >{{ product.name }}</a>
+                                        <li ng-repeat="product in S.quickProductResults"><a href="" ng-click="S.proceedToProductDetails(product.id)" >{{ product.name }}</a></li>
                                 {% endverbatim %}
+                                </ul>
                             </div>
 
 
@@ -294,22 +296,30 @@
                 self.quicksearch = function(){
                     $chain = angular.element('#search-box').val();
                     if($chain.length <2){
+                        angular.element('#quickSearchDropDown').css('display','none');
+                        self.quickProductResults = [];
+                        searchResultsService.removeQuickProductResults();
                         return;
                     }
                     $http.get("/search/getProductsMatchingToName/"+$chain).success(function(data){
                         self.quickProductResults = data.productsArray;
                         searchResultsService.removeQuickProductResults();
-                        for(var i=0;i<self.quickProductResults.length;i++){
+                        var i;
+                        for(i=0;i<self.quickProductResults.length;i++){
                             searchResultsService.addQuickProductResult(self.quickProductResults[i]);
                         }
+                        angular.element('#quickSearchDropDown').css('display','inline');
                     });
                 };
 
                 self.proceedToProductDetails = function(idProd){
                     $http.get("/search/getProductById/"+idProd).success(function(data){
                         productService.setProduct(data.product);
+                        angular.element('#quickSearchDropDown').css('display','none');
+                        self.quickProductResults = [];
+                        searchResultsService.removeQuickProductResults();
+                        $location.path('/productDetails');
                     });
-                    $location.path('/productDetails');
                 };
 
             });
