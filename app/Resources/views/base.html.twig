@@ -72,7 +72,7 @@
 
 
                         </div>
-                        <button type="submit" class="btn btn-default">Search</button>
+                        <button type="submit" class="btn btn-default" ng-controller="searchResults as S" ng-click="S.showFullResults()">Search</button>
                     </div>
                     <ul class="nav navbar-nav navbar-right">
                         {% if app.user %}
@@ -235,6 +235,9 @@
                 when('/productDetails',{
                     templateUrl: 'angular/ProductDetails.html'
                 }).
+                when('/searchResults',{
+                    templateUrl: 'angular/SearchResults.html'
+                }).
                 otherwise({
                     redirectTo: '/'
                 });
@@ -292,7 +295,7 @@
             myApp.controller('searchResults', function($scope, $http,$location, $route, searchResultsService, productService){
                 var self = this;
                 self.quickProductResults = searchResultsService.getQuickProductResults();
-
+                self.productResults = searchResultsService.getProductResults();
                 self.quicksearch = function(){
                     $chain = angular.element('#search-box').val();
                     if($chain.length <2){
@@ -321,6 +324,22 @@
                         $location.path('/productDetails');
                     });
                 };
+
+                self.showFullResults = function(){
+                    $chain = angular.element('#search-box').val();
+                    $http.get("/search/getAllProductsMatchingToName/"+$chain).success(function(data){
+                        self.quickProductResults = [];
+                        self.productResults = data.productsArray;
+                        searchResultsService.removeQuickProductResults();
+                        searchResultsService.removeProductResults();
+                        var i;
+                        for(i=0;i<self.productResults.length;i++){
+                            searchResultsService.addProductResult(self.productResults[i]);
+                        }
+                        angular.element('#quickSearchDropDown').css('display','none');
+                        $location.path('/searchResults');
+                    });
+                }
 
             });
 

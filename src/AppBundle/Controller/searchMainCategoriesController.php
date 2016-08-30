@@ -229,6 +229,38 @@ class searchMainCategoriesController extends Controller
     }
 
     /**
+     * @Route("/getAllProductsMatchingToName/{chain}", name="getAllProductsMatchingToName")
+     * @Method("GET")
+     */
+    public function getAllProductsMatchingToName($chain){
+        if (strlen($chain)<2){
+            return new JsonResponse(array('productsArray' => 1)); //argument to short
+        }
+        $em = $this->get('doctrine.orm.entity_manager');
+        $chain = '%'.$chain.'%';
+        $query = $em->createQuery('SELECT p FROM AppBundle\Entity\Product p WHERE p.name LIKE :chain');
+        $query->setParameter('chain', $chain);
+        $products = $query->getResult();
+        //exit(dump($products));
+
+        $productsArray = array();
+        $i=0;
+        foreach($products as $product){
+            $productsArray[$i]['id'] = $product->getId();
+            $productsArray[$i]['name'] = $product->getName();
+            $productsArray[$i]['price'] = $product->getPrice();
+            $productsArray[$i]['description'] = $product->getDescription();
+            $productsArray[$i]['category'] = $product->getCategory()->getName();
+            $productsArray[$i]['amount'] = $product->getAmount();
+            $productsArray[$i]['picture_path'] = $product->getPicturePath();
+            $i++;
+        }
+
+        return new JsonResponse(array('productsArray' => $productsArray));
+    }
+
+
+    /**
      * @Route("/getOrdersByUserId/{userid}", name="getOrdersByUserId")
      * @Method("GET")
      */

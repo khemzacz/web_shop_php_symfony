@@ -1,0 +1,16 @@
+<div ng-controller="searchResults as S">
+
+    <div class="row">
+        <div class="col-md-6"> Name </div>
+        <div class="col-md-6"> Price </div>
+    </div>
+
+    <div class="row" ng-repeat="product in S.productResults">
+        <a href="" ng-click="S.proceedToProductDetails(product.id)">
+            <div class="col-md-6"> {{ product.name }} </div>
+            <div class="col-md-6"> {{ product.price }} PLN </div>
+        </a>
+    </div>
+
+
+</div>
