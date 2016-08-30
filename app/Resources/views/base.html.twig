@@ -296,6 +296,7 @@
                 var self = this;
                 self.quickProductResults = searchResultsService.getQuickProductResults();
                 self.productResults = searchResultsService.getProductResults();
+                self.sortBy = 'name';
                 self.quicksearch = function(){
                     $chain = angular.element('#search-box').val();
                     if($chain.length <2){
@@ -334,12 +335,38 @@
                         searchResultsService.removeProductResults();
                         var i;
                         for(i=0;i<self.productResults.length;i++){
+                            self.productResults[i].price = parseFloat(self.productResults[i].price);
                             searchResultsService.addProductResult(self.productResults[i]);
                         }
                         angular.element('#quickSearchDropDown').css('display','none');
                         $location.path('/searchResults');
                     });
                 }
+
+                self.sortByName = function (){
+                    if(self.sortBy == 'name'){
+                        self.sortBy = '-name';
+                    }
+                    else if (self.sortBy == '-name'){
+                        self.sortBy = 'name';
+                    }
+                    else{
+                        self.sortBy = 'name';
+                    }
+
+                };
+
+                self.sortByPrice = function (){
+                    if(self.sortBy == 'price'){
+                        self.sortBy = '-price';
+                    }
+                    else if (self.sortBy == '-price'){
+                        self.sortBy = 'price';
+                    }
+                    else{
+                        self.sortBy = 'price';
+                    }
+                };
 
             });
 

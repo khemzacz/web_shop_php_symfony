@@ -1,11 +1,11 @@
 <div ng-controller="searchResults as S">
 
     <div class="row">
-        <div class="col-md-6"> Name </div>
-        <div class="col-md-6"> Price </div>
+        <div class="col-md-6" ng-click="S.sortByName()"> Name </div>
+        <div class="col-md-6" ng-click="S.sortByPrice()"> Price </div>
     </div>
 
-    <div class="row" ng-repeat="product in S.productResults">
+    <div class="row" ng-repeat="product in S.productResults | orderBy : S.sortBy">
         <a href="" ng-click="S.proceedToProductDetails(product.id)">
             <div class="col-md-6"> {{ product.name }} </div>
             <div class="col-md-6"> {{ product.price }} PLN </div>
