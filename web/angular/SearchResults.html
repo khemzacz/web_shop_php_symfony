@@ -1,11 +1,20 @@
 <div ng-controller="searchResults as S">
-
+    <div>
+        <button class="btn btn-default" ng-click="S.showFilters = !S.showFilters"> Filters </button>
+    </div>
+    <br/>
+    <div ng-if="S.showFilters">
+        Price from: <input type="number" ng-model="S.minPrice" min="1" max="S.maxPrice"> PLN
+                to: <input type="number" ng-model="S.maxPrice" min="S.minPrice" max="999999"> PLN
+        <br/> Only currently available: <input type="checkbox" ng-click="S.changeAvailabilityFilter()" />
+    </div>
     <div class="row">
         <div class="col-md-6" ng-click="S.sortByName()"> Name </div>
         <div class="col-md-6" ng-click="S.sortByPrice()"> Price </div>
     </div>
 
-    <div class="row" ng-repeat="product in S.productResults | orderBy : S.sortBy">
+    <div class="row" ng-repeat="product in S.productResults | orderBy : S.sortBy"
+         ng-if="(product.price <= S.maxPrice) && (product.price >= S.minPrice) && (product.amount >= S.availabilityFilter)">
         <a href="" ng-click="S.proceedToProductDetails(product.id)">
             <div class="col-md-6"> {{ product.name }} </div>
             <div class="col-md-6"> {{ product.price }} PLN </div>

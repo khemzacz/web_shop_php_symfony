@@ -297,6 +297,20 @@
                 self.quickProductResults = searchResultsService.getQuickProductResults();
                 self.productResults = searchResultsService.getProductResults();
                 self.sortBy = 'name';
+                self.showFilters = false;
+                self.minPrice=1;
+                self.maxPrice=999999;
+                self.availabilityFilter=0;
+
+                self.changeAvailabilityFilter = function(){
+                    if (self.availabilityFilter==1){
+                        self.availabilityFilter=0;
+                    }
+                    else{
+                        self.availabilityFilter=1;
+                    }
+                };
+
                 self.quicksearch = function(){
                     $chain = angular.element('#search-box').val();
                     if($chain.length <2){
