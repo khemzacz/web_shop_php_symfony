@@ -263,7 +263,9 @@
             myApp.controller('ProductBrowser', function ($scope, $http, productService){
                 this.test ="lista Kategorii";
                 var self = this;
+                self.showOpinions=false;
                 self.product = productService.getProduct();
+                self.opinions = [];
                 self.user = {% if app.user is not null %}{{ app.user.id }} {% else %} null {% endif %};
 
                 $http.get('/search/getCategoriesTree').success(function(data){
@@ -284,6 +286,19 @@
                         self.product = data.product;
                     });
                 };
+
+                self.getOpinions = function(){
+                    if (self.showOpinions==true){
+                        self.showOpinions=false;
+                    }
+                    else {
+                        $http.get("/opinions/listOpinionsForProductById/"+self.product[0].id).success(function(data){
+                            self.opinions = data.opinionsArray;
+                        });
+                        self.showOpinions=true;
+                    }
+                }
+
                 $scope.callToAddToProductList = function(currObj){
                     productService.addProduct(currObj);
                 };

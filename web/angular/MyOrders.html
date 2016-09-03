@@ -22,17 +22,20 @@
                 <div ng-if="order.showProducts">
                     <div class="row">
                         <div class="col-md-2"> Identifier </div>
-                        <div class="col-md-4"> Name </div>
+                        <div class="col-md-3"> Name </div>
                         <div class="col-md-2"> Amount </div>
                         <div class="col-md-2"> Total price </div>
                         <div class="col-md-2"> Unit price </div>
+                        <div class="col-md-1"> Reviews</div>
                     </div>
                     <div class="row" ng-repeat="product in order.products">
                         <div class="col-md-2"> {{ product.id }} </div>
-                        <div class="col-md-4"> {{ product.name }}  </div>
+                        <div class="col-md-3"> {{ product.name }}  </div>
                         <div class="col-md-2"> {{ product.amount }} </div>
                         <div class="col-md-2"> {{ product.price }} PLN </div>
                         <div class="col-md-2"> {{ product.price/product.amount }} PLN </div>
+                        <div class="col-md-1" ng-if="product.reviewed"> edit review </div>
+                        <div class="col-md-1" ng-if="!product.reviewed"> add review </div>
                     </div>
 
                 </div>

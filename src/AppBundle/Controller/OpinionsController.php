@@ -49,6 +49,47 @@ class OpinionsController extends Controller{
 
     }
 
+    /**
+     * @Route("/editOpinion/{productid}/{userid}/{body}", name="editOpinion")
+     * @Method("GET")
+     */
+    public function editOpinion($productid, $userid, $body){
+        try {
+            if ($userid == ''){
+                return new JsonResponse('2');
+            }
+            if ($productid == ''){
+                return new JsonResponse('3');
+            }
+            if ($body == ''){
+                return new JsonResponse('4');
+            }
+            $em = $this->get('doctrine.orm.entity_manager');
+            $user = $em->find('AppBundle\Entity\User', $userid);
+            $body = '\''.$body.'\'';
+            $product = $em->find('AppBundle\Entity\Product', $productid);
+            $repository = $this->getDoctrine()->getRepository('AppBundle:Opinion');
+            $qb = $repository->createQueryBuilder('o');
+            $qb->update('AppBundle\Entity\Opinion','o')
+                -> set('o.body', $body)
+                -> where('o.product = :p')
+                -> andWhere('o.user = :u')
+                -> setParameter('p',$product)
+                -> setParameter('u',$user);
+            $query= $qb->getQuery();
+            if(count($query->getResult())>0){
+                return new JsonResponse('0');
+            }
+            else{
+                return new JsonResponse('5'); // didn't update
+            }
+
+
+
+        } catch (Exception $e){
+            return new JsonResponse('1'); //DB error
+        }
+    }
 
     /**
      * @Route("/addOpinion/{productid}/{userid}/{body}", name="addOpinion")

@@ -29,6 +29,24 @@
             <div class="btn-group-vertical" ng-if="C.user != null">
                 <a href="#/placeOrder" class="btn btn-default" ng-click="setProduct(C.product[0])">add To Basket</a>
             </div>
+            <br/>
+
+            <a href ="" class="btn btn-default" ng-click="C.getOpinions()"> Show user opinions</a>
+
+            <div ng-if="C.showOpinions">
+                <ul>
+                    <li ng-repeat="opinion in C.opinions">
+                            Reviewed by: {{ opinion.user }}
+                        <br>    "{{ opinion.body }}"
+
+                    </li>
+
+                </ul>
+
+
+            </div>
+
+
         </div>
 
     </div>

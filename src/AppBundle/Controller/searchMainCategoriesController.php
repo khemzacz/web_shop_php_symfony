@@ -277,6 +277,8 @@ class SearchMainCategoriesController extends Controller
 
         $ordersArray = array();
 
+        $repository = $this->getDoctrine()->getRepository('AppBundle:Opinion');
+        $qb = $repository->createQueryBuilder('o');
 
 
         $i=0; $j=0;
@@ -302,12 +304,28 @@ class SearchMainCategoriesController extends Controller
             $ordersArray[$i]['value'] = 0;
             $price = 0;
             $orderProducts = $em->getRepository('AppBundle\Entity\OrderProducts')->findBy(array('order' => $order));
+
+
+
             foreach($orderProducts as $orderProduct){
                 $product = $orderProduct->getProduct();
                 $ordersArray[$i]['products'][$j]['id'] = $product->getId();
                 $ordersArray[$i]['products'][$j]['name'] = $product->getName();
                 $ordersArray[$i]['products'][$j]['amount'] = $orderProduct->getNumber();
                 $price += $ordersArray[$i]['products'][$j]['price'] = $orderProduct->getNumber() * $product->getPrice();
+
+                $qb -> select('o')
+                    -> where('o.product = :p')
+                    -> andWhere('o.user = :u')
+                    -> setParameter('p',$product)
+                    -> setParameter('u',$user);
+                $query= $qb->getQuery();
+                if( count($query->getResult())>0 ) {
+                    $ordersArray[$i]['products'][$j]['reviewed'] = true;
+                }
+                else
+                    $ordersArray[$i]['products'][$j]['reviewed'] = false;
+
                 $j++;
             }
             $ordersArray[$i]['value'] = $price;
