@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<div ng-controller="Reviews as R">
+    <form ng-submit="R.editReview()">
+        Share Your opinions about the product below:
+        <br/>
+        <input type="text" id="review-body">
+        <input type="submit">
+    </form>
+    <br/>
+    {{ R.message }}
+</div>

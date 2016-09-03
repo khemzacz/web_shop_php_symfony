@@ -125,6 +125,7 @@
             myApp.service('productService', function() {
                 var productList = [];
                 var product = null;
+                var productToReview = null;
                 var orderList = [];
 
                 var addOrder = function(newObj){
@@ -155,6 +156,14 @@
                     return product;
                 };
 
+                var setProductToReview = function(obj){
+                    productToReview = obj;
+                };
+
+                var getProductToReview = function(){
+                    return productToReview;
+                };
+
                 var removeProduct = function(product){
                     for (var i=0;i<productList.length;i++){
                         if(productList[i]==product){
@@ -177,7 +186,9 @@
                     removeAllProducts: removeAllProducts,
                     addOrder: addOrder,
                     getOrders: getOrders,
-                    removeAllOrders: removeAllOrders
+                    removeAllOrders: removeAllOrders,
+                    getProductToReview: getProductToReview,
+                    setProductToReview: setProductToReview
                 };
 
             });
@@ -237,6 +248,12 @@
                 }).
                 when('/searchResults',{
                     templateUrl: 'angular/SearchResults.html'
+                }).
+                when('/addReview',{
+                    templateUrl: 'angular/AddReview.html'
+                }).
+                when('/editReview',{
+                    templateUrl: 'angular/editReview.html'
                 }).
                 otherwise({
                     redirectTo: '/'
@@ -412,10 +429,17 @@
                     productService.addProduct($scope.product);
                     $location.path('/');
                 };
-//                self.order = function(){
-//
-//
-//                };
+
+                self.addReview = function($product){
+                    productService.setProductToReview($product);
+                    $location.path('/addReview');
+                }
+
+                self.editReview = function($product){
+                    productService.setProductToReview($product);
+                    $location.path('/editReview');
+                }
+
 
                 self.placeAnOrder = function($userid){
                     if (productService.getProducts() == ''){
@@ -470,6 +494,41 @@
                     productService.removeProduct(product);
                     self.refreshBasket();
                 };
+            });
+
+            myApp.controller('Reviews', function($scope,$http, $location,productService){
+                var self = this;
+                self.productToReview = productService.getProductToReview();
+                self.message;
+                self.addReview = function(){
+                    self.productid = self.productToReview.id;
+                    self.userid = {% if app.user is not null %}{{ app.user.id }} {% else %} null {% endif %};
+                    self.reviewbody = document.getElementById('review-body').value;
+                    $http.get("/opinions/addOpinion/"+self.productid+"/"+self.userid+"/"+self.reviewbody).success(function(data){
+                        if(data==0){
+                            self.message = "Your review has been edited successfully!";
+                        }
+                        else {
+                            self.message = "There was an error with editing Your review.";
+                        }
+                    });
+
+                }
+                self.editReview = function(){
+                    self.productid = self.productToReview.id;
+                    self.userid = {% if app.user is not null %}{{ app.user.id }} {% else %} null {% endif %};
+                    self.reviewbody = document.getElementById('review-body').value;
+                    $http.get("/opinions/editOpinion/"+self.productid+"/"+self.userid+"/"+self.reviewbody).success(function(data){
+                        if(data==0){
+                            self.message = "Your review has been added successfully!";
+                        }
+                        else {
+                            self.message = "There was an error with adding Your review.";
+                        }
+                    });
+                }
+
+
             });
 
         </script>
