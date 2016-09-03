@@ -14,11 +14,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 
 /**
- * Class salesController
+ * Class SalesController
  * @Route("/sales")
  * @package AppBundle\Controller
  */
-class salesController extends Controller
+class SalesController extends Controller
 {
     /**
      * @Route("/order/{basket}/{userid}", name="orderBasketForUser")

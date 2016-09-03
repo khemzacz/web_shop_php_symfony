@@ -50,9 +50,15 @@ class Product
     protected $picture_path;
 
     /**
-     * @ORM\OneToMany(targetEntity="OrderProducts", mappedBy="order")
+     * @ORM\OneToMany(targetEntity="OrderProducts", mappedBy="product")
      */
     protected $order_products;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Opinion", mappedBy="product")
+     */
+    protected $opinions;
+
 
     public function getAbsolutePath(){
         return null === $this->picture_path ? null : $this->getUploadDir().'/'.$this->path;

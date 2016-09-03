@@ -10,11 +10,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 /**
- * Class searchMainCategoriesController
+ * Class SearchMainCategoriesController
  * @Route("/search")
  * @package AppBundle\Controller
  */
-class searchMainCategoriesController extends Controller
+class SearchMainCategoriesController extends Controller
 {
 
     /**
