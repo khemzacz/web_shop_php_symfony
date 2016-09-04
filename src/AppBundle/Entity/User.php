@@ -27,11 +27,11 @@ class User extends BaseUser
      * @ORM\OneToMany(targetEntity="Order", mappedBy="user")
      */
     protected $orders;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Opinion", mappedBy="user")
-     */
-    protected $opinions;
+//
+//    /**
+//     * @ORM\OneToMany(targetEntity="Opinion", mappedBy="user")
+//     */
+//    protected $opinions;
 
     public function __construct()
     {

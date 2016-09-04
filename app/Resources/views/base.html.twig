@@ -501,32 +501,43 @@
                 self.productToReview = productService.getProductToReview();
                 self.message;
                 self.addReview = function(){
+                    self.message = "Adding review in progress...";
                     self.productid = self.productToReview.id;
                     self.userid = {% if app.user is not null %}{{ app.user.id }} {% else %} null {% endif %};
                     self.reviewbody = document.getElementById('review-body').value;
+                    if(self.reviewbody.length < 6){
+                        self.message = "Your review is too short";
+                        return;
+                    }
                     $http.get("/opinions/addOpinion/"+self.productid+"/"+self.userid+"/"+self.reviewbody).success(function(data){
                         if(data==0){
-                            self.message = "Your review has been edited successfully!";
-                        }
-                        else {
-                            self.message = "There was an error with editing Your review.";
-                        }
-                    });
-
-                }
-                self.editReview = function(){
-                    self.productid = self.productToReview.id;
-                    self.userid = {% if app.user is not null %}{{ app.user.id }} {% else %} null {% endif %};
-                    self.reviewbody = document.getElementById('review-body').value;
-                    $http.get("/opinions/editOpinion/"+self.productid+"/"+self.userid+"/"+self.reviewbody).success(function(data){
-                        if(data==0){
                             self.message = "Your review has been added successfully!";
+                            $location.path('/myOrders');
                         }
                         else {
                             self.message = "There was an error with adding Your review.";
                         }
                     });
-                }
+
+                };
+                self.editReview = function(){
+                    self.message = "Saving changes...";
+                    self.productid = self.productToReview.id;
+                    self.userid = {% if app.user is not null %}{{ app.user.id }} {% else %} null {% endif %};
+                    self.reviewbody = document.getElementById('review-body').value;
+                    if(self.reviewbody.length < 6){
+                        self.message = "Your review is too short";
+                        return;
+                    }
+                    $http.get("/opinions/editOpinion/"+self.productid+"/"+self.userid+"/"+self.reviewbody).success(function(data){
+                        if(data==0){
+                            self.message = "Your review has been added successfully!";
+                        }
+                        else {
+                            self.message = "There was an error with editing Your review.";
+                        }
+                    });
+                };
 
 
             });
