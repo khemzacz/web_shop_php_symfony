@@ -33,9 +33,26 @@ class User extends BaseUser
 //     */
 //    protected $opinions;
 
+    /**
+     * @ORM\Column(type="text")
+     */
+    protected $secret;
+
+    /**
+     * User constructor.
+     */
     public function __construct()
     {
         parent::__construct();
+
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $cl = strlen($characters);
+        $genSecret = '';
+        $strength = 60;
+        for ($i = 0;$i<$strength;$i++){
+            $genSecret .= $characters[rand(0,$cl-1)];
+        }
+        $this->secret = $genSecret;
 
     }
 
@@ -77,4 +94,22 @@ class User extends BaseUser
     public function getId(){
         return $this->id;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getSecret()
+    {
+        return $this->secret;
+    }
+
+    /**
+     * @param mixed $secret
+     */
+    public function setSecret($secret)
+    {
+        $this->secret = $secret;
+    }
+
+
 }

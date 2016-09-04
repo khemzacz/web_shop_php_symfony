@@ -50,10 +50,10 @@ class OpinionsController extends Controller{
     }
 
     /**
-     * @Route("/editOpinion/{productid}/{userid}/{body}", name="editOpinion")
+     * @Route("/editOpinion/{productid}/{userid}/{body}/{secret}", name="editOpinion")
      * @Method("GET")
      */
-    public function editOpinion($productid, $userid, $body){
+    public function editOpinion($productid, $userid, $body,$secret){
         try {
             if ($userid == ''){
                 return new JsonResponse('2');
@@ -66,6 +66,9 @@ class OpinionsController extends Controller{
             }
             $em = $this->get('doctrine.orm.entity_manager');
             $user = $em->find('AppBundle\Entity\User', $userid);
+            if ($secret != $user->getSecret()) {
+                return new JsonResponse('4'); //unathorized
+            }
             $body = '\''.$body.'\'';
             $product = $em->find('AppBundle\Entity\Product', $productid);
             $repository = $this->getDoctrine()->getRepository('AppBundle:Opinion');
@@ -92,10 +95,10 @@ class OpinionsController extends Controller{
     }
 
     /**
-     * @Route("/addOpinion/{productid}/{userid}/{body}", name="addOpinion")
+     * @Route("/addOpinion/{productid}/{userid}/{body}/{secret}", name="addOpinion")
      * @Method("GET")
      */
-    public function addOpinion($productid, $userid, $body){
+    public function addOpinion($productid, $userid, $body, $secret){
         try {
             if ($userid == ''){
                 return new JsonResponse('2');
@@ -107,8 +110,11 @@ class OpinionsController extends Controller{
                 return new JsonResponse('3');
             }
             $em = $this->get('doctrine.orm.entity_manager');
-            $opinion = new Opinion;
             $user = $em->find('AppBundle\Entity\User', $userid);
+            if ($secret != $user->getSecret()) {
+                return new JsonResponse('4'); //unathorized
+            }
+            $opinion = new Opinion;
             $product = $em->find('AppBundle\Entity\Product', $productid);
             $opinion->setUser($user);
             $opinion->setProduct($product);

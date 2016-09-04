@@ -446,7 +446,8 @@
                            alert('No products in the basket!');
                            return;
                     }
-                        $http.get("/sales/order/"+JSON.stringify(productService.getProducts())+"/"+$userid).success(function(data){
+                        $http.get("/sales/order/"+JSON.stringify(productService.getProducts())+"/"+$userid+"/"+"{{ app.user.secret }}")
+                        .success(function(data){
                             if(data==0){
                                 alert('Success: Your order has been placed. Thank You sir for using our services.')
                                 productService.removeAllProducts();
@@ -464,7 +465,7 @@
                 };
 
                 self.showMyOrders = function ($userid){
-                    $http.get("/search/getOrdersByUserId/"+$userid).success(function(data){
+                    $http.get("/search/getOrdersByUserId/"+$userid+"/"+"{{ app.user.secret }}").success(function(data){
                         productService.removeAllOrders();
                         self.orders = data.ordersArray;
                         for (var i=0;i<self.orders.length;i++)
@@ -509,7 +510,7 @@
                         self.message = "Your review is too short";
                         return;
                     }
-                    $http.get("/opinions/addOpinion/"+self.productid+"/"+self.userid+"/"+self.reviewbody).success(function(data){
+                    $http.get("/opinions/addOpinion/"+self.productid+"/"+self.userid+"/"+self.reviewbody+"/"+"{{ app.user.secret }}").success(function(data){
                         if(data==0){
                             self.message = "Your review has been added successfully!";
                             $location.path('/myOrders');
@@ -529,7 +530,7 @@
                         self.message = "Your review is too short";
                         return;
                     }
-                    $http.get("/opinions/editOpinion/"+self.productid+"/"+self.userid+"/"+self.reviewbody).success(function(data){
+                    $http.get("/opinions/editOpinion/"+self.productid+"/"+self.userid+"/"+self.reviewbody+"/"+"{{ app.user.secret }}").success(function(data){
                         if(data==0){
                             self.message = "Your review has been added successfully!";
                         }
