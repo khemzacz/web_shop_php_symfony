@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use AppBundle\Entity\User;
+use AppBundle\Entity\Product;
 
 /**
  * Class SearchMainCategoriesController
@@ -172,26 +174,25 @@ class SearchMainCategoriesController extends Controller
      * @Method("GET")
      */
     public function getProductById($id){
-        $repository = $this->getDoctrine()->getRepository('AppBundle:Product');
-        $qb= $repository->createQueryBuilder('c');
-        $qb->select('c')
-            ->where('c.id =:productid')
-            ->setParameter('productid', $id);
-        $query = $qb->getQuery();
-        $products= $query -> getResult();
-        $productArray = array();
+        $em = $this->get('doctrine.orm.entity_manager');
+//        $repository = $this->getDoctrine()->getRepository('AppBundle:Product');
+//        $qb= $repository->createQueryBuilder('c');
+//        $qb->select('c')
+//            ->where('c.id =:productid')
+//            ->setParameter('productid', $id);
+//        $query = $qb->getQuery();
+//        $product = $query -> getResult();
+        $product = $em->find('AppBundle\Entity\Product', $id);
+//        $productArray = array();
 
-        $i = 0;
 
-        foreach($products as $product) {
-            $productArray[0]['id'] = $product->getId();
-            $productArray[0]['nazwa'] = $product->getName();
-            $productArray[0]['cena'] = $product->getPrice();
-            $productArray[0]['dostepnosc'] = $product->getAmount();
-            $productArray[0]['opis'] = $product->getDescription();
-            $productArray[0]['picture_path'] = $product->getPicturePath();
-            $i++;
-        }
+            $productArray['id'] = $product->getId();
+            $productArray['nazwa'] = $product->getName();
+            $productArray['cena'] = $product->getPrice();
+            $productArray['dostepnosc'] = $product->getAmount();
+            $productArray['opis'] = $product->getDescription();
+            $productArray['picture_path'] = $product->getPicturePath();
+
 
         return new JsonResponse(array('product' =>$productArray));
     }
@@ -261,13 +262,16 @@ class SearchMainCategoriesController extends Controller
 
 
     /**
-     * @Route("/getOrdersByUserId/{userid}", name="getOrdersByUserId")
+     * @Route("/getOrdersByUserId/{userid}/{secret}", name="getOrdersByUserId")
      * @Method("GET")
      */
-    public function getOrdersByUserId($userid){
+    public function getOrdersByUserId($userid, $secret){
         $repository = $this->getDoctrine()->getRepository('AppBundle:Order');
         $em = $this->get('doctrine.orm.entity_manager');
         $user = $em->find('AppBundle\Entity\User',$userid);
+        if ($secret != $user->getSecret()) {
+            return new JsonResponse('4'); //unathorized
+        }
         $qb= $repository->createQueryBuilder('o');
         $qb->select('o')
             ->where('o.user =:user')

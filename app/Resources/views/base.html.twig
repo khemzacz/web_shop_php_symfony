@@ -277,7 +277,7 @@
 //                return result;
 //            })
 
-            myApp.controller('ProductBrowser', function ($scope, $http, productService){
+            myApp.controller('ProductBrowser', function ($scope, $rootScope, $http, productService){
                 this.test ="lista Kategorii";
                 var self = this;
                 self.showOpinions=false;
@@ -314,7 +314,11 @@
                         });
                         self.showOpinions=true;
                     }
-                }
+                };
+
+                $rootScope.$on('refreshProductEvent', function(event) {
+                    self.product = productService.getProduct();
+                });
 
                 $scope.callToAddToProductList = function(currObj){
                     productService.addProduct(currObj);
@@ -324,7 +328,7 @@
                 };
             });
 
-            myApp.controller('searchResults', function($scope, $http,$location, $route, searchResultsService, productService){
+            myApp.controller('searchResults', function($scope, $rootScope, $http,$location, $route, searchResultsService, productService){
                 var self = this;
                 self.quickProductResults = searchResultsService.getQuickProductResults();
                 self.productResults = searchResultsService.getProductResults();
@@ -368,7 +372,10 @@
                         angular.element('#quickSearchDropDown').css('display','none');
                         self.quickProductResults = [];
                         searchResultsService.removeQuickProductResults();
-                        $location.path('/productDetails');
+                        if ($location.path() != '/productDetails')
+                            $location.path('/productDetails');
+                        else
+                            $rootScope.$emit('refreshProductEvent');
                     });
                 };
 
@@ -420,6 +427,7 @@
                 var self = this;
                 var amount = 0;
                 self.orders = productService.getOrders();
+                self.secret = '{% if app.user is not null %}{{ app.user.secret }} {% else %} null {% endif %}';
                 $scope.product = productService.getProduct();
 
 
@@ -446,7 +454,7 @@
                            alert('No products in the basket!');
                            return;
                     }
-                        $http.get("/sales/order/"+JSON.stringify(productService.getProducts())+"/"+$userid+"/"+"{{ app.user.secret }}")
+                        $http.get("/sales/order/"+JSON.stringify(productService.getProducts())+"/"+$userid+"/"+self.secret)
                         .success(function(data){
                             if(data==0){
                                 alert('Success: Your order has been placed. Thank You sir for using our services.')
@@ -465,7 +473,7 @@
                 };
 
                 self.showMyOrders = function ($userid){
-                    $http.get("/search/getOrdersByUserId/"+$userid+"/"+"{{ app.user.secret }}").success(function(data){
+                    $http.get("/search/getOrdersByUserId/"+$userid+"/"+self.secret).success(function(data){
                         productService.removeAllOrders();
                         self.orders = data.ordersArray;
                         for (var i=0;i<self.orders.length;i++)
@@ -505,12 +513,13 @@
                     self.message = "Adding review in progress...";
                     self.productid = self.productToReview.id;
                     self.userid = {% if app.user is not null %}{{ app.user.id }} {% else %} null {% endif %};
+                    self.secret = '{% if app.user is not null %}{{ app.user.secret }} {% else %} null {% endif %}';
                     self.reviewbody = document.getElementById('review-body').value;
                     if(self.reviewbody.length < 6){
                         self.message = "Your review is too short";
                         return;
                     }
-                    $http.get("/opinions/addOpinion/"+self.productid+"/"+self.userid+"/"+self.reviewbody+"/"+"{{ app.user.secret }}").success(function(data){
+                    $http.get("/opinions/addOpinion/"+self.productid+"/"+self.userid+"/"+self.reviewbody+"/"+self.secret).success(function(data){
                         if(data==0){
                             self.message = "Your review has been added successfully!";
                             $location.path('/myOrders');
@@ -525,12 +534,13 @@
                     self.message = "Saving changes...";
                     self.productid = self.productToReview.id;
                     self.userid = {% if app.user is not null %}{{ app.user.id }} {% else %} null {% endif %};
+                    self.secret = '{% if app.user is not null %}{{ app.user.secret }} {% else %} null {% endif %}';
                     self.reviewbody = document.getElementById('review-body').value;
                     if(self.reviewbody.length < 6){
                         self.message = "Your review is too short";
                         return;
                     }
-                    $http.get("/opinions/editOpinion/"+self.productid+"/"+self.userid+"/"+self.reviewbody+"/"+"{{ app.user.secret }}").success(function(data){
+                    $http.get("/opinions/editOpinion/"+self.productid+"/"+self.userid+"/"+self.reviewbody+"/"+self.secret).success(function(data){
                         if(data==0){
                             self.message = "Your review has been added successfully!";
                         }

@@ -2,7 +2,7 @@
     <div class="myProduct" ng-if="C.product != null">
         Name: {{ C.product.nazwa }}<br>
         Price: {{ C.product.cena }} <br><br>
-        <img ng-src = "/products/images/{{ C.product[0].picture_path }}"/><br><br>
+        <img ng-src = "/products/images/{{ C.product.picture_path }}"/><br><br>
         Availability: {{ C.product.dostepnosc }} <br>
         Description: {{ C.product.opis }} <br>
         <div class="btn-group-vertical" ng-if="C.user != null">

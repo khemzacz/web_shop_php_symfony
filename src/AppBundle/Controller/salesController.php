@@ -21,10 +21,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class SalesController extends Controller
 {
     /**
-     * @Route("/order/{basket}/{userid}", name="orderBasketForUser")
+     * @Route("/order/{basket}/{userid}/{secret}", name="orderBasketForUser")
      * @Method("GET")
      */
-    public function orderBasketForUser($basket,$userid){
+    public function orderBasketForUser($basket,$userid,$secret){
         try {
             if ($userid == ''){
                 return new JsonResponse('2');
@@ -33,8 +33,12 @@ class SalesController extends Controller
                 return new JsonResponse('3');
             }
             $em = $this->get('doctrine.orm.entity_manager');//getDoctrine()->getEntityManager();
-            $order = new Order;
             $user = $em->find('AppBundle\Entity\User', $userid);
+            if ($secret != $user->getSecret()) {
+                return new JsonResponse('4'); //unathorized
+            }
+
+            $order = new Order;
             $order->setUser($user);
             $state = $em->find('AppBundle\Entity\State',1);
             $order->setState($state);
